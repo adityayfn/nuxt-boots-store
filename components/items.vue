@@ -15,6 +15,7 @@
               <v-img
                 :src="isHovering ? data.hover : data.imgThumb"
                 :lazy-src="isHovering ? data.hover : data.imgThumb"
+                alt="item try on"
               ></v-img>
 
               <h5 class="px-2 py-1">{{ data.name }}</h5>

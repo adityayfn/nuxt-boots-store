@@ -41,11 +41,11 @@
               >
                 <div class="d-flex">
                   <v-radio label="GOOGLE PAY" value="gpay"> </v-radio>
-                  <img src="/gpay.svg" class="payment-w" />
+                  <img src="/gpay.svg" class="payment-w" alt="gpay" />
                 </div>
                 <div class="d-flex">
                   <v-radio label="PAYPAL" value="paypal"></v-radio>
-                  <img src="/paypal.svg" class="payment-w" />
+                  <img src="/paypal.svg" class="payment-w" alt="paypal" />
                 </div>
               </v-radio-group>
               <div class="d-flex">

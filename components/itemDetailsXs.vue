@@ -27,6 +27,7 @@
                 :src="color"
                 :width="store.selectedColor === color ? 70 : 80"
                 @click="addColor(color)"
+                alt="variant"
               ></v-img>
             </div>
           </div>

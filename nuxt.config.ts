@@ -25,5 +25,5 @@ export default defineNuxtConfig({
       "process.env.DEBUG": false,
     },
   },
-  modules: ["nuxt-swiper", "@pinia/nuxt"],
+  modules: ["nuxt-swiper", "@pinia/nuxt", "nuxt-delay-hydration"],
 })

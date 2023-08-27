@@ -13,7 +13,7 @@
     >
       <SwiperSlide v-for="data in props.datas" :key="data.id">
         <v-card class="">
-          <v-img :src="data.hover" :lazy-src="data.hover"></v-img>
+          <v-img :src="data.hover" :lazy-src="data.hover" alt="gallery"></v-img>
         </v-card>
       </SwiperSlide>
     </Swiper>

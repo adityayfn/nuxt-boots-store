@@ -36,7 +36,7 @@
             >
               <img
                 :src="item.color"
-                alt=""
+                alt="image-variant"
                 :width="$vuetify.display.smAndUp ? 100 : 50"
                 class="mr-2"
               />

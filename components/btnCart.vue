@@ -12,7 +12,7 @@
       <v-card width="350" color="yellow" class="mx-2">
         <v-card-item v-for="(item, index) in displayedItems" :key="index">
           <div class="d-flex align-center">
-            <img :src="item.color" width="50" class="mr-2" />
+            <img :src="item.color" width="50" class="mr-2" alt="image-item"/>
             <h5 class="name mr-2">{{ item.name }}</h5>
             <h5 class="size">{{ item.size }}</h5>
             <h5 class="mx-2">
