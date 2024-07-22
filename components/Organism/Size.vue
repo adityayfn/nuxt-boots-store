@@ -25,9 +25,6 @@ const store = useMyCart()
 
 const selectSize = (size) => {
   store.selectedSize = size
-  setTimeout(() => {
-    store.selectedSize = null
-  }, 10000)
 }
 </script>
 <style></style>

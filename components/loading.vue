@@ -9,16 +9,6 @@
         color="yellow"
         indeterminate
       ></v-progress-circular>
-      <v-progress-circular
-        :size="50"
-        color="yellow"
-        indeterminate
-      ></v-progress-circular>
-      <v-progress-circular
-        :size="50"
-        color="yellow"
-        indeterminate
-      ></v-progress-circular>
     </div>
   </div>
 </template>

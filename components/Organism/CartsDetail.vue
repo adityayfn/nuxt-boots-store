@@ -1,11 +1,11 @@
 <template>
-  <div v-if="store.cart.length >= 1">
+  <div v-if="store.carts.length >= 1">
     <v-card
       class="my-5"
       variant="outlined"
       :class="$vuetify.display.mdAndUp ? 'mx-10' : ''"
     >
-      <v-card-item v-for="(item, index) in store.cart">
+      <v-card-item v-for="(item, index) in store.carts">
         <div
           class="d-flex relative justify-space-between flex-wrap"
           :class="
@@ -16,13 +16,15 @@
               : ''
           "
         >
-          <div class="absolute box">
-            <v-checkbox
-              v-model="item.selected"
-              @change="onItemChange(index)"
-            ></v-checkbox>
+          <div class="absolute">
+            <input
+              type="checkbox"
+              class="input-checkbox"
+              :checked="store.carts[index].selected"
+              @change="onItemChange(item, index)"
+            />
           </div>
-          <div class="">
+          <div >
             <h4 class="text-center font-base">Product</h4>
             <div
               class="d-flex justify-center"
@@ -44,7 +46,7 @@
             </div>
           </div>
 
-          <div class="">
+          <div >
             <h4 class="text-center font-base">Size</h4>
             <div>
               <h5 class="text-center font-500">{{ item.size }}</h5>
@@ -54,7 +56,7 @@
             <h4 class="text-center font-base">Price</h4>
             <div>
               <h5 class="text-center font-500">
-                {{ store.formatCurrency(store.singlePrice[index]) }}
+                {{ formatCurrency(item.price, "USD") }}
               </h5>
             </div>
           </div>
@@ -70,7 +72,7 @@
               <v-icon
                 icon="mdi-plus mr-1 "
                 class="cursor-pointer"
-                @click="item.quantity++"
+                @click="store.addQty(item)"
               ></v-icon>
             </div>
           </div>
@@ -78,56 +80,87 @@
       </v-card-item>
     </v-card>
     <v-card
-      class="d-flex align-center justify-space-between px-5"
+      class="d-flex align-center justify-space-between px-5 py-5"
       variant="outlined"
       :class="$vuetify.display.mdAndUp ? 'mx-10' : ''"
     >
       <div class="flex-1-1">
-        <v-checkbox
-          label="Select All"
-          class="mt-6"
-          v-model="store.selectAll"
+        <input
+          type="checkbox"
+          class="input-checkbox"
+          :checked="store.selectAll"
           @change="onSelectAllChange()"
-        >
-        </v-checkbox>
+        />
       </div>
       <div class="d-flex flex-column align-center mr-6">
         <h4>Total Price</h4>
-        <h5>{{ store.formatCurrency(store.cartTotal) }}</h5>
+        <h5>{{ formatCurrency(store.cartTotal, "USD") }}</h5>
       </div>
-      <Checkout />
+
+      <v-btn
+        color="black"
+        class="bg-yellow"
+        variant="text"
+        @click="store.checkout(checkoutedItems)"
+      >
+        CHECKOUT
+      </v-btn>
     </v-card>
   </div>
 </template>
 <script setup>
+import { getAuth } from "firebase/auth"
+import { doc, updateDoc } from "firebase/firestore"
+
 import { useMyCart } from "~/stores/myCart"
+
 const store = useMyCart()
 
+const nuxt = useNuxtApp()
+const userDocRef = ref()
+
+const checkoutedItems = computed(() => {
+  const items = store.carts.filter((item) => item.selected == true)
+  return items
+})
+
 const isAllSelect = () => {
-  return store.cart.every((item) => item.selected)
+  return store.carts.every((item) => item.selected)
 }
 
 const updateSelectAll = () => {
   store.selectAll = isAllSelect()
 }
 
-const onSelectAllChange = () => {
-  store.cart.forEach((item) => (item.selected = store.selectAll))
+const onSelectAllChange = async () => {
+  const newSelectAll = !store.selectAll
+  store.carts.forEach((item) => (item.selected = newSelectAll))
+  store.selectAll = newSelectAll
+
+  await updateDoc(userDocRef.value, {
+    carts: store.carts,
+  })
 }
 
-const onItemChange = (index) => {
-  if (!store.cart[index].selected) store.selectAll = false
-  else updateSelectAll()
+const onItemChange = async (item, index) => {
+  const newSelected = !item.selected
+  store.carts[index].selected = newSelected
+
+  await updateDoc(userDocRef.value, {
+    carts: store.carts,
+  })
+
+  updateSelectAll()
 }
 
+watchEffect(() => {
+  store.carts
+  updateSelectAll()
+})
 onMounted(() => {
-  watch(
-    store.cart,
-    () => {
-      updateSelectAll()
-    },
-    { deep: true }
-  )
+  if (getAuth().currentUser) {
+    userDocRef.value = doc(nuxt.$db, "users", getAuth().currentUser.uid)
+  }
 })
 </script>
 <style scoped>
@@ -141,10 +174,6 @@ onMounted(() => {
   width: 350px;
 }
 
-.box {
-  top: -16px;
-  left: -10px;
-}
 .font-base {
   font-size: 1.1rem !important ;
 }
@@ -153,5 +182,9 @@ onMounted(() => {
 }
 .font-10 {
   font-size: 1.5rem;
+}
+.input-checkbox {
+  width: 18px;
+  height: 18px;
 }
 </style>

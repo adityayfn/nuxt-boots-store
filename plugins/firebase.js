@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app"
-import { getFirestore } from "firebase/firestore/lite"
+import { getFirestore } from "firebase/firestore"
+import { getAuth } from "firebase/auth"
 
 export default defineNuxtPlugin((nuxtapp) => {
   const config = useRuntimeConfig()
@@ -15,6 +16,13 @@ export default defineNuxtPlugin((nuxtapp) => {
   }
   const app = initializeApp(firebaseConfig)
   const db = getFirestore(app)
+  const auth = getAuth(app)
+  const firestore = getFirestore(app)
 
   nuxtapp.provide("db", db)
+  nuxtapp.provide("auth", auth)
+  nuxtapp.provide("firestore", firestore)
+
+  // nuxtapp.vueApp.provide("auth", auth)
+  // nuxtapp.vueApp.provide("firestore", firestore)
 })

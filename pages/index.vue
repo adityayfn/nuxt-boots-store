@@ -1,15 +1,23 @@
 <template>
-  <div class="mt-4">
-    <Hero />
+  <section class="mt-4">
+    <OrganismHero :datas="props.datas" />
     <h1 class="text-center mt-3">SHOP NEW ARRIVALS</h1>
     <keep-alive>
-      <Items :datas="props.datas" />
+      <OrganismItems :datas="props.datas.slice(0, 6)" />
     </keep-alive>
-    <Gallery :datas="props.datas" />
-    <Banner />
-    <Footer />
-  </div>
+
+    <OrganismMyswiper
+      :datas="props.datas"
+      :modules="[SwiperNavigation, SwiperPagination, SwiperAutoplay]"
+      :slides_per_view="$vuetify.display.xs ? 1 : $vuetify.display.sm ? 3 : 4"
+    />
+  </section>
 </template>
 <script setup>
+definePageMeta({
+  middleware: ["auth"],
+})
+
+
 const props = defineProps(["datas"])
 </script>

@@ -11,29 +11,33 @@
       <Loading />
     </div>
     <div v-else>
-      <ItemDetailsXs :datas="product" v-if="$vuetify.display.xs" />
-      <ItemDetails :datas="product" v-if="$vuetify.display.smAndUp" />
+      <OrganismItemDetailsXs :datas="product" v-if="$vuetify.display.xs" />
+      <OrganismItemDetails
+        :datas="product"
+        v-if="$vuetify.display.smAndUp"
+        :breadcrumbs="route.params.id[1]"
+      />
     </div>
   </div>
 </template>
 <script setup>
-const { datas, error, fetchData, loading } = useDatas()
+definePageMeta({
+  middleware: ["auth"],
+})
+const { datas, fetchData } = useDatas()
+const route = useRoute()
+const loading = ref(true)
 
 onMounted(async () => {
   await fetchData()
+  setTimeout(() => {
+    loading.value = false
+  }, 1200)
 })
-
-const route = useRoute()
 
 const product = computed(() => {
   return datas.value.filter((data) => data.id === route.params.id)
 })
-
-let title
-
-for (let t of product.value) {
-  console.log(t)
-}
 </script>
 <style>
 .mb-20 {

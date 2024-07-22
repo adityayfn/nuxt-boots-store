@@ -1,5 +1,8 @@
 <template>
-  <v-container class="">
+  <v-container>
+    <div>
+      <v-breadcrumbs :items="items"> </v-breadcrumbs>
+    </div>
     <div
       class="mt-10 d-flex justify-center"
       :class="$vuetify.display.sm ? 'flex-column' : 'flex-row'"
@@ -27,7 +30,7 @@
         <div class="mb-2">
           <div class="d-flex flex-column my-2">
             <h2>{{ data.name }}</h2>
-            <h2>{{ store.formatCurrency(data.price) }}</h2>
+            <h2>{{ formatCurrency(data.price, "USD") }}</h2>
           </div>
 
           <p>{{ data.description }}</p>
@@ -36,19 +39,23 @@
         <div class="mb-2">
           <h3>Variant:</h3>
           <div class="d-flex">
-            <div v-for="(color, key) in data.colors" class="mx-2">
-              <p>{{ key.toUpperCase() }}</p>
+            <div
+              @click="addColor(color)"
+              v-for="(color, key) in data.colors"
+              class="mx-2 cursor-pointer"
+              :class="store.selectedColor === color ? 'border-yellow' : ''"
+            >
+              <p class="pa-1 text-center">{{ key.toUpperCase() }}</p>
               <v-img
                 :src="color"
                 :width="store.selectedColor === color ? 70 : 80"
-                @click="addColor(color)"
                 alt="variant"
               ></v-img>
             </div>
           </div>
         </div>
         <div class="mb-5">
-          <Size :size="data.size" />
+          <OrganismSize :size="data.size" />
         </div>
 
         <v-alert
@@ -73,14 +80,40 @@ const props = defineProps(["datas", "error"])
 
 const store = useMyCart()
 
+const breadcrumb = ref("")
+watch(() => {
+  props.datas.map((data) => {
+    breadcrumb.value = data
+  })
+})
+
+const items = [
+  {
+    title: "Home",
+    href: "/",
+    disabled: false,
+  },
+  {
+    title: "Products",
+    href: "/products",
+    disabled: false,
+  },
+  {
+    title: breadcrumb.value.name,
+    href: `/product/${breadcrumb.value.id}`,
+    disabled: true,
+  },
+]
+
 const addColor = (color) => {
   store.selectedColor = color
-  setTimeout(() => {
-    store.selectedColor = null
-  }, 7000)
 }
 </script>
-<style>
+<style scoped>
+.border-yellow {
+  border: 5px solid yellow;
+  border-color: yellow;
+}
 .price {
   position: absolute;
   bottom: 10px;

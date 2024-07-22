@@ -4,46 +4,56 @@
     <Meta name="description" content="Fake Store" />
   </Head>
 
-  <v-layout class="rounded rounded-md">
-    <v-app-bar class="py-2 px-8" color="#000000">
-      <nuxt-link to="/">
-        <img src="/logo.webp" alt="" style="width: 70px"
-      /></nuxt-link>
-      <nuxt-link to="/mens" class="link px-3">
-        <h3>Mens</h3>
-      </nuxt-link>
-      <nuxt-link to="/womens" class="link px-3">
-        <h3>Womens</h3>
-      </nuxt-link>
-      <v-spacer></v-spacer>
-      <v-card color="yellow" class="py-1">
-        <BtnCart />
-      </v-card>
-    </v-app-bar>
-
-    <v-main class="" style="">
-      <div v-if="loading">
-        <Loading />
-      </div>
-      <div v-else>
+  <NuxtLayout>
+    <div v-if="load">
+      <Loading />
+    </div>
+    <div v-else>
+      <keep-alive>
         <NuxtPage :datas="datas" />
-      </div>
-    </v-main>
-  </v-layout>
+      </keep-alive>
+    </div>
+  </NuxtLayout>
 </template>
 <script setup>
-const { datas, error, loading, fetchData } = useDatas()
-fetchData()
+definePageMeta({
+  middleware: ["auth"],
+})
+import { useMyAuth } from "~/stores/myAuth"
+const { datas, fetchData } = useDatas()
 
-// useHead({
-//   title: "Dr Martens: Fake Dr Martens Store",
-//   meta: [
-//     {
-//       name: "description",
-//       content: "Fake Store",
-//     },
-//   ],
-// })
+const load = ref(true)
+
+const store = useMyAuth()
+
+const addScriptMidtrans = () => {
+  const snapScript = "https://app.sandbox.midtrans.com/snap/snap.js"
+  const config = useRuntimeConfig()
+
+  const script = document.createElement("script")
+  script.src = snapScript
+  script.setAttribute("data-client-key", config.public.clientKey)
+  script.async = true
+  document.body.appendChild(script)
+}
+const removeScript = () => {
+  if (script) {
+    document.body.removeChild(script)
+  }
+}
+
+onMounted(() => {
+  fetchData()
+  store.loadUser()
+  setTimeout(() => {
+    load.value = false
+  }, 1200)
+
+  addScriptMidtrans()
+})
+onBeforeUnmount(() => {
+  removeScript()
+})
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200;400;700&display=swap");

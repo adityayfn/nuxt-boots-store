@@ -1,5 +1,8 @@
 <template>
   <v-container>
+    <div>
+      <v-breadcrumbs :items="items"> </v-breadcrumbs>
+    </div>
     <v-card v-for="data in props.datas" :key="data.id">
       <Swiper
         :modules="[SwiperNavigation, SwiperPagination]"
@@ -15,17 +18,21 @@
       <v-card class="px-3 py-2" height="">
         <div>
           <h3 class="my-1">{{ data.name }}</h3>
-          <h3 class="my-1">{{ store.formatCurrency(data.price) }}</h3>
+          <h3 class="my-1">{{ formatCurrency(data.price, "USD") }}</h3>
           <p class="my-2">{{ data.description }}</p>
         </div>
         <div class="mb-5">
           <h3>Variant:</h3>
-          <div class="d-flex flex-wrap">
-            <div v-for="(color, key) in data.colors" class="mx-2">
-              <p>{{ key.toUpperCase() }}</p>
+          <div class="d-flex flex-wrap ga-2">
+            <div
+              v-for="(color, key) in data.colors"
+              class="mx-2"
+              :class="store.selectedColor === color ? 'border-yellow' : ''"
+            >
+              <p class="pa-1 text-center">{{ key.toUpperCase() }}</p>
               <v-img
                 :src="color"
-                :width="store.selectedColor === color ? 70 : 80"
+                :width="80"
                 @click="addColor(color)"
                 alt="variant"
               ></v-img>
@@ -33,7 +40,7 @@
           </div>
         </div>
         <div class="mb-5">
-          <Size :size="data.size" />
+          <OrganismSize :size="data.size" />
         </div>
         <v-alert
           v-if="store.alert != null"
@@ -58,12 +65,38 @@ const props = defineProps(["datas", "error"])
 
 const store = useMyCart()
 
+const breadcrumb = ref("")
+watch(() => {
+  props.datas.map((data) => {
+    breadcrumb.value = data
+  })
+})
+
+const items = [
+  {
+    title: "Home",
+    href: "/",
+    disabled: false,
+  },
+  {
+    title: "Products",
+    href: "/products",
+    disabled: false,
+  },
+  {
+    title: breadcrumb.value.name,
+    href: `/product/${breadcrumb.value.id}`,
+    disabled: true,
+  },
+]
+
 const addColor = (color) => {
   store.selectedColor = color
-  setTimeout(() => {
-    store.selectedColor = null
-  }, 7000)
 }
-
 </script>
-<style scoped></style>
+<style scoped>
+.border-yellow {
+  border: 5px solid yellow;
+  border-color: yellow;
+}
+</style>

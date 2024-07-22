@@ -1,5 +1,9 @@
 <template>
-  <v-container>
+  <v-container
+    :class="
+      route.path != '/' && $vuetify.display.mdAndUp ? 'h-screen mt-10' : ''
+    "
+  >
     <div class="d-flex flex-wrap">
       <div v-for="data in props.datas" :key="data.id" class="mx-auto">
         <v-hover>
@@ -19,11 +23,18 @@
               ></v-img>
 
               <h5 class="px-2 py-1">{{ data.name }}</h5>
-              <h4 class="px-2 price">{{ store.formatCurrency(data.price) }}</h4>
+              <h4 class="px-2 price">
+                {{ formatCurrency(data.price, "USD") }}
+              </h4>
             </v-card>
           </template>
         </v-hover>
       </div>
+    </div>
+    <div class="d-flex justify-center mt-10" v-if="route.path == '/'">
+      <v-btn color="yellow" @click="router.push('/products')"
+        >Explore All Products</v-btn
+      >
     </div>
   </v-container>
 </template>
@@ -34,12 +45,19 @@ const props = defineProps(["datas", "error"])
 const store = useMyCart()
 const router = useRouter()
 const more = (id) => {
-  router.push(`/product/${id}`)
+  router.push({
+    path: `/product/${id}`,
+  })
 }
+
+const route = useRoute()
 </script>
 <style>
 .price {
   position: absolute;
   bottom: 10px;
+}
+.h-sreen {
+  min-height: 100vh;
 }
 </style>

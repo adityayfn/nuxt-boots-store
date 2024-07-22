@@ -6,10 +6,12 @@ export default defineNuxtConfig({
     "@mdi/font/css/materialdesignicons.min.css",
   ],
   build: {
-    transpile: ["vuetify", "vue-toastification"],
+    transpile: ["vuetify", "vue-toastification", "node-fetch-native"],
   },
 
   runtimeConfig: {
+    serverKey: process.env.NUXT_SERVER_KEY,
+
     public: {
       apiKey: process.env.NUXT_API_KEY,
       authDomain: process.env.NUXT_AUTH_DOMAIN,
@@ -18,6 +20,8 @@ export default defineNuxtConfig({
       storageBucket: process.env.NUXT_STORAGE_BUCKET,
       messagingSenderId: process.env.NUXT_MESSAGING_SENDERID,
       appId: process.env.NUXT_APP_ID,
+
+      clientKey: process.env.NUXT_CLIENT_KEY,
     },
   },
   vite: {
@@ -25,5 +29,5 @@ export default defineNuxtConfig({
       "process.env.DEBUG": false,
     },
   },
-  modules: ["nuxt-swiper", "@pinia/nuxt"],
+  modules: ["nuxt-swiper", "@pinia/nuxt", "nuxt-scheduler"],
 })

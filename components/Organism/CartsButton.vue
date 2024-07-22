@@ -3,8 +3,8 @@
     <v-menu transition="scale-transition" :close-on-content-click="false">
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props">
-          <v-badge :content="store.cart.length">
-            <v-icon icon="mdi mdi-cart" size="x-large"></v-icon>
+          <v-badge :content="store.carts.length || 0">
+            <v-icon icon="mdi mdi-cart" size="x-small"></v-icon>
           </v-badge>
         </v-btn>
       </template>
@@ -12,11 +12,11 @@
       <v-card width="350" color="yellow" class="mx-2">
         <v-card-item v-for="(item, index) in displayedItems" :key="index">
           <div class="d-flex align-center">
-            <img :src="item.color" width="50" class="mr-2" alt="image-item"/>
+            <img :src="item.color" width="50" class="mr-2" alt="image-item" />
             <h5 class="name mr-2">{{ item.name }}</h5>
             <h5 class="size">{{ item.size }}</h5>
             <h5 class="mx-2">
-              {{ store.formatCurrency(store.singlePrice[index]) }}
+              {{ formatCurrency(item.price, "USD") }}
             </h5>
             <div class="d-flex align-center icon">
               <v-icon
@@ -28,20 +28,20 @@
               <v-icon
                 icon="mdi-plus mr-1 "
                 class="cursor-pointer"
-                @click="item.quantity++"
+                @click="store.addQty(item)"
               ></v-icon>
             </div>
           </div>
         </v-card-item>
         <div class="d-flex justify-center my-3">
-          <div v-if="store.cart.length <= 0">
+          <div v-if="store.carts.length <= 0">
             <h3>Empty Carts</h3>
           </div>
           <v-btn
             color="black"
             class="text-yellow"
             @click="showCarts()"
-            v-if="store.cart.length <= 3 && store.cart.length >= 1"
+            v-if="store.carts.length <= 3 && store.carts.length >= 1"
           >
             Show Carts</v-btn
           >
@@ -50,8 +50,8 @@
             color="black"
             class="text-yellow"
             @click="showCarts()"
-            v-if="store.cart.length > 3"
-            >{{ store.cart.length - 3 }} More Items</v-btn
+            v-if="store.carts.length > 3"
+            >{{ store.carts.length - 3 }} More Items</v-btn
           >
         </div>
       </v-card>
@@ -59,20 +59,53 @@
   </div>
 </template>
 <script setup>
+import { ref, computed, watch } from "vue"
+import { useRouter } from "vue-router"
+import { doc, onSnapshot } from "firebase/firestore"
+import { useMyAuth } from "~/stores/myAuth"
 import { useMyCart } from "~/stores/myCart"
+
 const store = useMyCart()
 const router = useRouter()
+const nuxt = useNuxtApp()
+
+const uid = ref("")
 
 const limit = ref(3)
 const displayedItems = computed(() => {
-  return store.cart.slice(0, limit.value)
+  return store.carts.slice(0, limit.value)
 })
 
-const showCarts = () => {
-  router.push("/product/carts")
+const setupCartListener = () => {
+  if (uid.value) {
+    const userDocRef = doc(nuxt.$db, "users", uid.value)
+    onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        store.carts = docSnapshot.data().carts || []
+        console.log(docSnapshot.data())
+      } else {
+        store.carts = []
+      }
+    })
+  }
 }
 
+const storeAuth = useMyAuth()
 
+watch(
+  () => storeAuth.userRef,
+  (newUserRef, oldUserRef) => {
+    if (newUserRef && newUserRef.uid !== uid.value) {
+      uid.value = newUserRef.uid
+      setupCartListener()
+    }
+  },
+  { immediate: true }
+)
+
+const showCarts = () => {
+  router.push("/user/carts")
+}
 </script>
 
 <style>
