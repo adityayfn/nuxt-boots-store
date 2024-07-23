@@ -52,6 +52,10 @@ NUXT_CLIENT_KEY=
 NUXT_SERVER_KEY=
 ```
 
+## Demo
+
+https://fake-drmartens-store.netlify.app/
+
 ## Documentation
 
 [Nuxt 3 documentation](https://nuxt.com/)
