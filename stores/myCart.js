@@ -5,7 +5,6 @@ import {
   doc,
   getDoc,
   updateDoc,
-  
 } from "firebase/firestore"
 import { defineStore } from "pinia"
 
@@ -19,7 +18,7 @@ export const useMyCart = defineStore("myCart", {
     selectedSize: null,
     selectedColor: null,
     selected: false,
-    selectAll: false,   
+    selectAll: false,
     dialog: false,
     snapToken: null,
   }),
@@ -28,15 +27,19 @@ export const useMyCart = defineStore("myCart", {
       const toast = useToast()
 
       const auth = getAuth()
-      const uid = getAuth().currentUser.uid
+
       const nuxt = useNuxtApp()
-      const userDoc = doc(nuxt.$db, "users", uid)
 
       if (auth.currentUser == null) {
-        toast.error("You must login first")
         this.selectedColor = null
         this.selectedSize = null
-      } else if (this.selectedColor == null && this.selectedSize == null) {
+        return toast.error("You must login first")
+      }
+
+      const uid = getAuth().currentUser.uid
+      const userDoc = doc(nuxt.$db, "users", uid)
+
+      if (this.selectedColor == null && this.selectedSize == null) {
         toast.error("Please choose the variant and size")
       } else if (this.selectedColor == null) {
         toast.error("Please choose the variant")
@@ -186,6 +189,10 @@ export const useMyCart = defineStore("myCart", {
       const storeAuth = useMyAuth()
       const toast = useToast()
       const userProfile = await storeAuth.getProfile()
+
+      if (userProfile.address == undefined) {
+        return toast.error("Please add your address in profile")
+      }
 
       const DATA_CHECKOUT = {
         customer: userProfile,

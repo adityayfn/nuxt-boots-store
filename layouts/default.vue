@@ -72,7 +72,6 @@ definePageMeta({
   middleware: ["auth"],
 })
 import { getAuth } from "firebase/auth"
-import { useMyCart } from "~/stores/myCart"
 import { useMyAuth } from "~/stores/myAuth"
 
 const auth = getAuth()
@@ -97,15 +96,12 @@ const items = [
 const isXs = ref(false)
 const drawerOnLoad = ref(false)
 
-onMounted(() => {
-  auth.onAuthStateChanged((user) => {
-    store.userRef = user
-  })
-})
-
 onBeforeMount(() => {
   isXs.value = true
   drawerOnLoad.value = true
+  auth.onAuthStateChanged((user) => {
+    store.userRef = user
+  })
 })
 </script>
 <style>

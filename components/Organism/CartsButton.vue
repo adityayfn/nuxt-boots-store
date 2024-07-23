@@ -82,7 +82,6 @@ const setupCartListener = () => {
     onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         store.carts = docSnapshot.data().carts || []
-        console.log(docSnapshot.data())
       } else {
         store.carts = []
       }

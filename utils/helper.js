@@ -22,3 +22,17 @@ export const formatCurrency = (value, curr) => {
     maximumFractionDigits: 3,
   }).format(value)
 }
+
+export const calculateExpiryDate = (date) => {
+  const orderTime = new Date(date)
+  const expiryTime = new Date(orderTime.getTime() + 24 * 60 * 60 * 1000)
+  return expiryTime.toLocaleString("en-GB", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  })
+}

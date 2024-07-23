@@ -158,28 +158,34 @@ export const useMyAuth = defineStore("myAuth", {
       const userSnapshot = await getDoc(userDoc)
       const userDocSnap = userSnapshot.data()
 
-      const newDataWithoutAddress = {
-        username:
-          this.newUsername != null ? this.newUsername : userDocSnap.username,
-        name: userDocSnap.name,
-        email: userDocSnap.email,
-      }
+      // const newData = {
+      //   ...userDocSnap,
+      //   username: this.newUsername,
+      // }
+      // console.log(newData)
 
-      const newDataWithAddress = {
-        username:
-          this.newUsername != null ? this.newUsername : userDocSnap.username,
-        name: userDocSnap.name,
-        email: userDocSnap.email,
-        address: this.address,
-      }
+      // const newDataWithAddress = {
+      //   username:
+      //     this.newUsername != null ? this.newUsername : userDocSnap.username,
+      //   name: userDocSnap.name,
+      //   email: userDocSnap.email,
+      //   address: this.address,
+      // }
 
       if (this.address == null && this.newUsername == null) {
-        toast.error("Please fill in one of the fields or just close this form")
-      } else if (this.address == null) {
+        return toast.error(
+          "Please fill in one of the fields or just close this form"
+        )
+      }
+
+      if (this.address == null) {
         if (this.usernameAvailable == null) {
           toast.error("Please check username first!")
         } else {
-          await updateDoc(userDoc, newDataWithoutAddress)
+          await updateDoc(userDoc, {
+            ...userDocSnap,
+            username: this.newUsername,
+          })
           await updateProfile(auth.currentUser, {
             displayName:
               this.newUsername != null
@@ -190,18 +196,32 @@ export const useMyAuth = defineStore("myAuth", {
           this.modalOpen = !this.modalOpen
           this.newUsername = null
         }
+      } else if (this.newUsername == null) {
+        await updateProfile(auth.currentUser, {
+          displayName:
+            this.newUsername != null ? this.newUsername : userDocSnap.username,
+        })
+        await updateDoc(userDoc, {
+          ...userDocSnap,
+          address: this.address,
+        })
+        toast.success("Address Updated!")
+        this.modalOpen = !this.modalOpen
+
+        this.address = null
       } else {
         if (this.usernameAvailable == null) {
           toast.error("Please check username first!")
         } else {
           await updateProfile(auth.currentUser, {
-            displayName:
-              this.newUsername != null
-                ? this.newUsername
-                : userDocSnap.username,
+            displayName: this.newUsername,
           })
-          await updateDoc(userDoc, newDataWithAddress)
-          toast.success("Username and Address Updated")
+          await updateDoc(userDoc, {
+            ...userDocSnap,
+            username: this.newUsername,
+            address: this.address,
+          })
+          toast.success("Username and Address Updated!")
           this.modalOpen = !this.modalOpen
           this.newUsername = null
           this.address = null

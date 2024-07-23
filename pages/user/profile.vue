@@ -7,11 +7,12 @@
           class="relative"
           prepend-icon="mdi-account"
           :title="profiles?.username"
-          :subtitle="profiles?.email"
         >
-          <v-text class="px-4">
-            {{ profiles?.name.toUpperCase() }} | {{ profiles?.address }}
-          </v-text>
+          <div class="d-flex flex-column">
+            <v-text class="px-4"> Name: {{ profiles?.name }} </v-text>
+            <v-text class="px-4"> Email: {{ profiles?.email }} </v-text>
+            <v-text class="px-4"> Address: {{ profiles?.address }} </v-text>
+          </div>
           <OrganismModalEditProfile title="Edit Profile">
             <div class="relative">
               <AtomsInput
@@ -74,6 +75,9 @@
                         <th class="text-center" v-if="item.value == 'pending'">
                           ACTION
                         </th>
+                        <th class="text-center" v-if="item.value == 'pending'">
+                          EXPIRED DATE
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -108,6 +112,9 @@
                             color="green"
                             >Refresh Status</v-btn
                           >
+                        </td>
+                        <td class="text-center" v-if="item.value == 'pending'">
+                          {{ calculateExpiryDate(data.transaction_time) }}
                         </td>
                       </tr>
                     </tbody>
