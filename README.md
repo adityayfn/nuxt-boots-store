@@ -65,3 +65,5 @@ https://fake-drmartens-store.netlify.app/
 [Midtrans Client library](https://www.npmjs.com/package/midtrans-client)
 
 [Virtual Account payment simulator](https://simulator.sandbox.midtrans.com/)
+
+[Nuxt Scheduler for remove expired order](https://github.com/jurassicjs/nuxt-scheduler)
