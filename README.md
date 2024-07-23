@@ -1,20 +1,16 @@
-# Nuxt 3 Minimal Starter
+# Nuxt Boots Store
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a fake dr.martens boots store.
+In this project I use firebase firestore, firebase authentication, and midtrans for payment gateway.
 
-## Setup
+## Installation
 
-Make sure to install the dependencies:
+Install Nuxt Boots Store with pnpm
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
+  git clone https://github.com/adityayfn/nuxt-boots-store.git
+  cd nuxt-boots-store
+  pnpm install
 ```
 
 ## Development Server
@@ -22,14 +18,7 @@ yarn install
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm run dev
-
-# yarn
-yarn dev
 ```
 
 ## Production
@@ -37,28 +26,38 @@ yarn dev
 Build the application for production:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm run build
-
-# yarn
-yarn build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm run preview
-
-# yarn
-yarn preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-# nuxt-boots-store
+## .env example
+
+```javascript
+//firebase credential
+NUXT_API_KEY=
+NUXT_AUTH_DOMAIN=
+NUXT_DATABASE_URL=
+NUXT_PROJECT_ID=
+NUXT_STORAGE_BUCKET=
+NUXT_MESSAGING_SENDERID=
+NUXT_APP_ID=
+
+//midtrans credential
+NUXT_CLIENT_KEY=
+NUXT_SERVER_KEY=
+```
+
+## Documentation
+
+[Nuxt 3 documentation](https://nuxt.com/)
+
+[Midtrans payment gateway](https://docs.midtrans.com/)
+
+[Midtrans Client library](https://www.npmjs.com/package/midtrans-client)
+
+[Virtual Account payment simulator](https://simulator.sandbox.midtrans.com/)
