@@ -24,7 +24,7 @@
               @change="onItemChange(item, index)"
             />
           </div>
-          <div >
+          <div>
             <h4 class="text-center font-base">Product</h4>
             <div
               class="d-flex justify-center"
@@ -46,7 +46,7 @@
             </div>
           </div>
 
-          <div >
+          <div>
             <h4 class="text-center font-base">Size</h4>
             <div>
               <h5 class="text-center font-500">{{ item.size }}</h5>
@@ -56,7 +56,7 @@
             <h4 class="text-center font-base">Price</h4>
             <div>
               <h5 class="text-center font-500">
-                {{ formatCurrency(item.price, "USD") }}
+                {{ formatCurrency(item.price, "IDR") }}
               </h5>
             </div>
           </div>
@@ -94,7 +94,7 @@
       </div>
       <div class="d-flex flex-column align-center mr-6">
         <h4>Total Price</h4>
-        <h5>{{ formatCurrency(store.cartTotal, "USD") }}</h5>
+        <h5>{{ formatCurrency(store.cartTotal, "IDR") }}</h5>
       </div>
 
       <v-btn
@@ -108,24 +108,25 @@
     </v-card>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { getAuth } from "firebase/auth"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc, Firestore } from "firebase/firestore"
 
 import { useMyCart } from "~/stores/myCart"
+import type { CartType } from "@/interface/"
 
 const store = useMyCart()
 
 const nuxt = useNuxtApp()
 const userDocRef = ref()
 
-const checkoutedItems = computed(() => {
-  const items = store.carts.filter((item) => item.selected == true)
+const checkoutedItems = computed((): any => {
+  const items = store.carts.filter((item: CartType) => item.selected == true)
   return items
 })
 
-const isAllSelect = () => {
-  return store.carts.every((item) => item.selected)
+const isAllSelect = (): boolean => {
+  return store.carts.every((item: CartType) => item.selected)
 }
 
 const updateSelectAll = () => {
@@ -134,7 +135,7 @@ const updateSelectAll = () => {
 
 const onSelectAllChange = async () => {
   const newSelectAll = !store.selectAll
-  store.carts.forEach((item) => (item.selected = newSelectAll))
+  store.carts.forEach((item: CartType) => (item.selected = newSelectAll))
   store.selectAll = newSelectAll
 
   await updateDoc(userDocRef.value, {
@@ -142,7 +143,7 @@ const onSelectAllChange = async () => {
   })
 }
 
-const onItemChange = async (item, index) => {
+const onItemChange = async (item: CartType, index: number) => {
   const newSelected = !item.selected
   store.carts[index].selected = newSelected
 
@@ -158,8 +159,11 @@ watchEffect(() => {
   updateSelectAll()
 })
 onMounted(() => {
+  const db = nuxt.$db as Firestore
+  const auth = getAuth()
+  const uid = auth.currentUser?.uid as string
   if (getAuth().currentUser) {
-    userDocRef.value = doc(nuxt.$db, "users", getAuth().currentUser.uid)
+    userDocRef.value = doc(db, "users", uid)
   }
 })
 </script>

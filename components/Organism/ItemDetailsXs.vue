@@ -7,7 +7,7 @@
       <Swiper
         :modules="[SwiperNavigation, SwiperPagination]"
         :slides-per-view="1"
-        :navigation="{ clickable: true }"
+        :navigation="true"
         :pagination="{ clickable: true, dynamicBullets: true }"
         class=""
       >
@@ -29,7 +29,7 @@
               class="mx-2"
               :class="store.selectedColor === color ? 'border-yellow' : ''"
             >
-              <p class="pa-1 text-center">{{ key.toUpperCase() }}</p>
+              <p class="pa-1 text-center">{{ key.toString().toUpperCase() }}</p>
               <v-img
                 :src="color"
                 :width="80"
@@ -42,12 +42,6 @@
         <div class="mb-5">
           <OrganismSize :size="data.size" />
         </div>
-        <v-alert
-          v-if="store.alert != null"
-          :type="store.alertType"
-          :title="store.alertTitle"
-          :text="store.alertMessage"
-        ></v-alert>
 
         <div class="d-flex my-5">
           <v-btn color="yellow" size="large" @click="store.addToCart(data)"
@@ -58,21 +52,33 @@
     </v-card>
   </v-container>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useMyCart } from "~/stores/myCart"
-
-const props = defineProps(["datas", "error"])
+import type { ProductType } from "@/interface/"
+const props = defineProps<{
+  datas: ProductType[] | any
+  error: any
+}>()
 
 const store = useMyCart()
 
-const breadcrumb = ref("")
-watch(() => {
-  props.datas.map((data) => {
-    breadcrumb.value = data
-  })
-})
+const breadcrumb = ref<ProductType>()
 
-const items = [
+watch(
+  () => props.datas,
+  (newData) => {
+    breadcrumb.value = newData.length > 0 ? newData[0] : null
+    console.log(newData)
+  },
+  { immediate: true }
+)
+type Items = {
+  title: any
+  href: string
+  disabled: boolean
+}
+
+const items: Items[] = [
   {
     title: "Home",
     href: "/",
@@ -84,13 +90,13 @@ const items = [
     disabled: false,
   },
   {
-    title: breadcrumb.value.name,
-    href: `/product/${breadcrumb.value.id}`,
+    title: breadcrumb.value?.name,
+    href: `/product/${breadcrumb.value?.id}`,
     disabled: true,
   },
 ]
 
-const addColor = (color) => {
+const addColor = (color: any) => {
   store.selectedColor = color
 }
 </script>

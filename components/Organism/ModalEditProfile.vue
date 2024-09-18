@@ -22,10 +22,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useMyAuth } from "@/stores/myAuth"
 
-const props = defineProps(["title"])
+const props = defineProps<{
+  title: string
+}>()
 const storeAuth = useMyAuth()
 </script>
 <style scoped>

@@ -21,7 +21,13 @@
     </SwiperSlide>
   </Swiper>
 </template>
-<script setup>
-const props = defineProps(["datas", "modules", "slides_per_view", "height"])
+<script setup lang="ts">
+import type { ProductType } from "@/interface/"
+const props = defineProps<{
+  datas: ProductType
+  modules: any
+  slides_per_view: number
+  height: number | any
+}>()
 </script>
 <style lang=""></style>

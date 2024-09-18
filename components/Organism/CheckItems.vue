@@ -34,7 +34,7 @@
           <h5>Qty :{{ item.quantity }}</h5>
           <h5>
             Price:
-            {{ formatCurrency(item.originalPrice, "USD") }}
+            {{ formatCurrency(item.originalPrice, "IDR") }}
           </h5>
         </div>
       </div>
@@ -49,11 +49,16 @@
     </v-card>
   </v-dialog>
 </template>
-<script setup>
-const props = defineProps(["datas", "dialog"])
+<script setup lang="ts">
+import type { CartType } from "@/interface/"
 
-const dialog = ref(false)
-const isSkeleton = ref(true)
+const props = defineProps<{
+  datas: CartType[]
+  dialog: boolean
+}>()
+
+const dialog = ref<boolean>(false)
+const isSkeleton = ref<boolean>(true)
 
 watch(dialog, () => {
   if (dialog.value) {

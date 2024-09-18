@@ -1,10 +1,11 @@
 import { ref } from "vue"
-import { collection, getDocs } from "firebase/firestore"
+import { collection, Firestore, getDocs } from "firebase/firestore"
+import type { ProductType } from "~/interface"
 
 export const useDatas = () => {
   const nuxt = useNuxtApp()
-  const db = nuxt.$db
-  const datas = ref([])
+  const db = nuxt.$db as Firestore
+  const datas = ref<ProductType[]>([])
   const error = ref(null)
 
   const fetchData = async () => {
@@ -18,7 +19,7 @@ export const useDatas = () => {
         }
       })
       datas.value = productList
-    } catch (error) {
+    } catch (error: any) {
       error.value = error.message
       console.log(error)
     }

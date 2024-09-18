@@ -60,7 +60,7 @@
     </div>
   </v-container>
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
@@ -70,10 +70,10 @@ import { useMyAuth } from "~/stores/myAuth"
 const store = useMyAuth()
 
 const router = useRouter()
-const form = ref(null)
+const form = ref<any|null>(null)
 
 const signUp = async () => {
-  const { valid } = await form.value.validate()
+  const { valid } = await form.value?.validate()
 
   if (valid) {
     store.register()

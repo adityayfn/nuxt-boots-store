@@ -67,7 +67,7 @@
   </v-layout>
   <Footer />
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
@@ -79,7 +79,7 @@ const store = useMyAuth()
 
 const router = useRouter()
 const pathname = useRoute()
-const drawer = ref(false)
+const drawer = ref<boolean>(false)
 const items = [
   {
     title: "Home",
@@ -93,8 +93,8 @@ const items = [
   },
 ]
 
-const isXs = ref(false)
-const drawerOnLoad = ref(false)
+const isXs = ref<boolean>(false)
+const drawerOnLoad = ref<boolean>(false)
 
 onBeforeMount(() => {
   isXs.value = true

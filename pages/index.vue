@@ -13,11 +13,16 @@
     />
   </section>
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
 
+import type { ProductType } from "../interface/"
 
-const props = defineProps(["datas"])
+const props = defineProps<{
+  datas: ProductType[]
+}>()
+
+console.log(props.datas)
 </script>

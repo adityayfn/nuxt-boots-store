@@ -84,7 +84,7 @@
                       <tr v-for="(data, index) in filteredStatus">
                         <td class="text-center">{{ data?.order_id }}</td>
                         <td class="text-center">
-                          {{ formatCurrency(data?.gross_amount, "USD") }}
+                          {{ formatCurrency(data?.gross_amount, "IDR") }}
                         </td>
 
                         <td class="text-center">
@@ -100,7 +100,10 @@
 
                         <td class="text-center">
                           <div @click="getItemsDetails(data.order_id)">
-                            <OrganismCheckItems :datas="detailsOrderById" />
+                            <OrganismCheckItems
+                              :datas="detailsOrderById"
+                              :dialog="false"
+                            />
                           </div>
                         </td>
                         <td class="text-center" v-if="item.value == 'pending'">
@@ -128,12 +131,15 @@
     </v-row>
   </section>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useMyAuth } from "@/stores/myAuth"
 import { useMyCart } from "@/stores/myCart"
-import { doc, onSnapshot } from "firebase/firestore"
+import { doc, onSnapshot, Firestore } from "firebase/firestore"
+import type { OrderType } from "@/types/"
+import type { User } from "firebase/auth"
+
 const storeAuth = useMyAuth()
-const userOrders = ref([])
+const userOrders = ref<OrderType[]>([])
 const storeCarts = useMyCart()
 
 const detailsOrderById = ref()
@@ -151,21 +157,13 @@ const items = [
 const tab = ref(items[0].value)
 const tabColor = ref("green")
 
-const status = ref([])
-
 const profiles = computed(() => {
   return storeAuth.userProfile
 })
 
-const filteredStatus = computed(() => {
+const filteredStatus = computed((): OrderType[] => {
   return userOrders?.value?.filter(
-    (item) => item.transaction_status === tab.value
-  )
-})
-
-watch(tab, (newTab) => {
-  filteredStatus.value = status.value.filter(
-    (data) => data.transaction_status === newTab
+    (item: OrderType) => item.transaction_status === tab.value
   )
 })
 
@@ -183,8 +181,9 @@ const uid = ref("")
 
 const setupCartListener = () => {
   const nuxt = useNuxtApp()
+  const db = nuxt.$db as Firestore
   if (uid.value) {
-    const userDocRef = doc(nuxt.$db, "users", uid.value)
+    const userDocRef = doc(db, "users", uid.value)
     onSnapshot(userDocRef, (docSnapshot) => {
       if (docSnapshot.exists()) {
         storeAuth.userProfile = docSnapshot.data() || []
@@ -201,15 +200,19 @@ const setupCartListener = () => {
 watch(
   () => storeAuth.userRef,
   (newUserRef, oldUserRef) => {
-    if (newUserRef && newUserRef.uid !== uid.value) {
-      uid.value = newUserRef.uid
-      setupCartListener()
+    // Pengecekan apakah newUserRef adalah objek user yang valid
+    if (newUserRef && "uid" in newUserRef) {
+      const user = newUserRef as User // casting ke tipe User jika perlu
+      if (user.uid !== uid.value) {
+        uid.value = user.uid
+        setupCartListener()
+      }
     }
   },
   { immediate: true }
 )
 
-const getItemsDetails = (orderId) => {
+const getItemsDetails = (orderId: string) => {
   const filtered = userOrders.value.filter((data) => data.order_id == orderId)
 
   detailsOrderById.value = filtered[0].items

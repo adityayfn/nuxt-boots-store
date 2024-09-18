@@ -22,7 +22,4 @@ export default defineNuxtPlugin((nuxtapp) => {
   nuxtapp.provide("db", db)
   nuxtapp.provide("auth", auth)
   nuxtapp.provide("firestore", firestore)
-
-  // nuxtapp.vueApp.provide("auth", auth)
-  // nuxtapp.vueApp.provide("firestore", firestore)
 })

@@ -22,10 +22,9 @@
     </v-menu>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useMyAuth } from "@/stores/myAuth"
 
-const props = defineProps(["profile"])
 const router = useRouter()
 const store = useMyAuth()
 

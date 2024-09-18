@@ -4,7 +4,7 @@ import { doc, getDoc } from "firebase/firestore"
 export const fetchFirestoreDatas = async () => {
   const auth = getAuth()
   const nuxt = useNuxtApp()
-  const uid = auth.currentUser.uid
+  const uid = auth?.currentUser?.uid
   const userDoc = doc(nuxt.$db, "users", uid)
 
   const cartSnapshot = await getDoc(userDoc)

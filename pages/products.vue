@@ -3,30 +3,61 @@
     <h1 class="text-center">All Products</h1>
 
     <v-container>
-      <v-tabs v-model="tab">
-        <v-tab value="all">All</v-tab>
-        <v-tab value="men">Men's</v-tab>
-        <v-tab value="women">Women's</v-tab>
-      </v-tabs>
+      <div class="d-flex ga-10 justify-space-between">
+        <div class="w-50">
+          <v-select
+            label="Sort Items"
+            :items="['all', 'men', 'women']"
+            variant="underlined"
+            v-model="selectedItems"
+          ></v-select>
+        </div>
+        <div class="w-50">
+          <v-select
+            clearable
+            label="Sort Price"
+            :items="sortType"
+            variant="underlined"
+            v-model="selectedPrice"
+          ></v-select>
+        </div>
+      </div>
     </v-container>
 
     <keep-alive>
-      <OrganismItems :datas="tab === 'all' ? props.datas : filteredData" />
+      <OrganismItems :datas="filteredPrice" />
     </keep-alive>
   </section>
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
-const tab = ref(null)
-const props = defineProps(["datas"])
+import type { ProductType } from "../interface/"
+
+const props = defineProps<{
+  datas: ProductType[]
+}>()
+
+const selectedPrice = ref<string | null>(null)
+const selectedItems = ref<string>("all")
+
+const sortType: string[] = ["Low to High", "High to Low"]
 
 const filteredData = computed(() => {
-  return props.datas.filter((data) => data.sex === tab.value)
+  if (selectedItems.value === "all") {
+    return props.datas
+  } else {
+    return props.datas.filter((data) => data.sex === selectedItems.value)
+  }
 })
-watch(tab, (newTab) => {
-  filteredData.value = props.datas.filter((data) => data.sex === newTab)
+
+const filteredPrice = computed(() => {
+  return filteredData.value.slice().sort((a: any, b: any) => {
+    if (selectedPrice.value === "Low to High") return a.price - b.price
+    else if (selectedPrice.value === "High to Low") return b.price - a.price
+    return 0
+  })
 })
 </script>
 <style>

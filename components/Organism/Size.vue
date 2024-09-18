@@ -17,13 +17,15 @@
     </div>
   </v-item-group>
 </template>
-<script setup>
+<script setup lang="ts">
 import { useMyCart } from "~/stores/myCart"
 
-const props = defineProps(["size"])
+const props = defineProps<{
+  size: string
+}>()
 const store = useMyCart()
 
-const selectSize = (size) => {
+const selectSize = (size: string) => {
   store.selectedSize = size
 }
 </script>

@@ -21,7 +21,7 @@
             :datas="props.datas"
             :modules="[SwiperNavigation, SwiperPagination, SwiperAutoplay]"
             :slides_per_view="1"
-            :height="$vuetify.display.mdAndUp ? '550' : 'auto'"
+            :height="$vuetify.display.mdAndUp ? 550 : 'auto'"
           />
         </v-sheet>
       </v-col>
@@ -29,8 +29,12 @@
   </v-container>
 </template>
 
-<script setup>
-const props = defineProps(["datas"])
+<script setup lang="ts">
+import type { ProductType } from "@/interface/"
+
+const props = defineProps<{
+  datas: ProductType
+}>()
 const router = useRouter()
 </script>
 

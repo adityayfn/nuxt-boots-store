@@ -9,11 +9,11 @@
     required
   ></v-text-field>
 </template>
-<script setup>
+<script setup lang="ts">
 const props = defineProps(["modelValue", "counter", "rules", "label", "type"])
 const emits = defineEmits(["update:modelValue"])
 
-const updateValue = (event) => {
+const updateValue = (event: any) => {
   emits("update:modelValue", event.target.value)
 }
 </script>

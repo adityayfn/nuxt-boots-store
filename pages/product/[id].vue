@@ -20,13 +20,16 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
+
+import type { ProductType } from "../../interface/"
+
 const { datas, fetchData } = useDatas()
 const route = useRoute()
-const loading = ref(true)
+const loading = ref<boolean>(true)
 
 onMounted(async () => {
   await fetchData()
@@ -35,8 +38,8 @@ onMounted(async () => {
   }, 1200)
 })
 
-const product = computed(() => {
-  return datas.value.filter((data) => data.id === route.params.id)
+const product = computed((): ProductType[] => {
+  return datas.value.filter((data: ProductType) => data.id === route.params.id)
 })
 </script>
 <style>

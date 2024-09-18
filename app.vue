@@ -15,14 +15,14 @@
     </div>
   </NuxtLayout>
 </template>
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: ["auth"],
 })
 import { useMyAuth } from "~/stores/myAuth"
 const { datas, fetchData } = useDatas()
 
-const load = ref(true)
+const load = ref<boolean>(true)
 
 const store = useMyAuth()
 
@@ -32,12 +32,14 @@ const addScriptMidtrans = () => {
 
   const script = document.createElement("script")
   script.src = snapScript
+  script.id = "snap"
   script.setAttribute("data-client-key", config.public.clientKey)
   script.async = true
   document.body.appendChild(script)
 }
 const removeScript = () => {
-  if (script) {
+  const script = window.document.getElementById("snap")
+  if (script && script.parentNode) {
     document.body.removeChild(script)
   }
 }

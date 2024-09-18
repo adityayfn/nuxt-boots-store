@@ -22,9 +22,9 @@
                 alt="item try on"
               ></v-img>
 
-              <h5 class="px-2 py-1">{{ data.name }}</h5>
+              <h4 class="px-2 py-1">{{ data.name }}</h4>
               <h4 class="px-2 price">
-                {{ formatCurrency(data.price, "USD") }}
+                {{ formatCurrency(data.price, "IDR") }}
               </h4>
             </v-card>
           </template>
@@ -38,13 +38,16 @@
     </div>
   </v-container>
 </template>
-<script setup>
-import { useMyCart } from "~/stores/myCart"
-const props = defineProps(["datas", "error"])
+<script setup lang="ts">
+import type { ProductType } from "@/interface/"
 
-const store = useMyCart()
+const props = defineProps<{
+  datas: ProductType
+  error: any
+}>()
+
 const router = useRouter()
-const more = (id) => {
+const more = (id: string) => {
   router.push({
     path: `/product/${id}`,
   })

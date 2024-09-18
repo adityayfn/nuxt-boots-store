@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     "vuetify/lib/styles/main.sass",
     "@mdi/font/css/materialdesignicons.min.css",
   ],
+
   build: {
     transpile: ["vuetify", "vue-toastification", "node-fetch-native"],
   },
@@ -24,10 +25,13 @@ export default defineNuxtConfig({
       clientKey: process.env.NUXT_CLIENT_KEY,
     },
   },
+
   vite: {
     define: {
       "process.env.DEBUG": false,
     },
   },
+
   modules: ["nuxt-swiper", "@pinia/nuxt", "nuxt-scheduler"],
+  compatibilityDate: "2024-09-05",
 })
